@@ -1,13 +1,13 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const AppointmentSchema = new mongoose.Schema({
+const AppointmentSchema = new Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     doctor: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
@@ -21,4 +21,4 @@ const AppointmentSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Appointment', AppointmentSchema);
+export default model('Appointment', AppointmentSchema);
