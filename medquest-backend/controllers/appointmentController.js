@@ -1,32 +1,23 @@
-const Appointment = require('../models/Appointment').default;
+const Appointment = require('../models/Appointment');
 
-// Create appointment
-exports.createAppointment = async (req, res) => {
-    const { doctor, date, reason } = req.body;
-
+const createAppointment = async (req, res) => {
+    const { title, date, userId } = req.body;
     try {
-        const appointment = new Appointment({
-            user: req.user.id,
-            doctor,
-            date,
-            reason,
-        });
-
+        const appointment = new Appointment({ title, date, userId });
         await appointment.save();
-        res.json(appointment);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
+        res.status(201).json(appointment);
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating appointment' });
     }
 };
 
-// Get user's appointments
-exports.getAppointments = async (req, res) => {
+const getAppointments = async (req, res) => {
     try {
-        const appointments = await Appointment.find({ user: req.user.id });
-        res.json(appointments);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
+        const appointments = await Appointment.find({ userId: req.params.userId });
+        res.status(200).json(appointments);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching appointments' });
     }
 };
+
+module.exports = { createAppointment, getAppointments };

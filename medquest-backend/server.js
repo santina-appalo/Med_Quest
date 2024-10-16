@@ -1,32 +1,31 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
 const cors = require('cors');
+const authRoutes = require('./routes/auth');
+const appointmentRoutes = require('./routes/appointments');
+const { connectDB } = require('./config/db');
 
-// Load environment variables from .env file
-dotenv.config();
-
-// Create an Express server
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-// Enable JSON and CORS
-app.use(express.json());
+// Middleware
 app.use(cors());
+app.use(bodyParser.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch((err) => console.log('Error connecting to MongoDB:', err));
+connectDB();
 
-// Routes for our app (authentication and appointments)
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/appointments', require('./routes/appointments'));
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/appointments', appointmentRoutes);
 
-// Start the server
-const PORT = process.env.PORT || 5000;
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Internal Server Error' });
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

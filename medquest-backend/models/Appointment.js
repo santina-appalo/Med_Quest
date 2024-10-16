@@ -1,24 +1,10 @@
-import { Schema, model } from 'mongoose';
+const mongoose = require('mongoose');
 
-const AppointmentSchema = new Schema({
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    doctor: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    date: {
-        type: Date,
-        required: true
-    },
-    reason: {
-        type: String,
-        required: true
-    }
+const appointmentSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    date: { type: Date, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User ', required: true },
 });
 
-export default model('Appointment', AppointmentSchema);
+const Appointment = mongoose.model('Appointment', appointmentSchema);
+module.exports = Appointment;

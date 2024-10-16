@@ -1,36 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
-function Dashboard() {
+const Dashboard = () => {
     const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
         const fetchAppointments = async () => {
-            try {
-                const res = await axios.get('/api/appointments', {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-                });
-                setAppointments(res.data);
-            } catch (err) {
-                console.error(err.response.data);
-            }
+            const response = await fetch('/api/appointments'); // Adjust endpoint as needed
+            const data = await response.json();
+            setAppointments(data);
         };
-
         fetchAppointments();
     }, []);
 
     return (
-        <div>
-            <h1>Your Appointments</h1>
+        <div className="dashboard-container">
+            <h2>Your Appointments</ h2>
             <ul>
                 {appointments.map((appointment) => (
-                    <li key={appointment._id}>
-                        Doctor: {appointment.doctor.username}, Date: {new Date(appointment.date).toLocaleDateString()}, Reason: {appointment.reason}
-                    </li>
+                    <li key={appointment._id}>{appointment.title}</li>
                 ))}
             </ul>
         </div>
     );
-}
+};
 
 export default Dashboard;
